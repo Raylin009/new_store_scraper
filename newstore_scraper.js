@@ -1,9 +1,34 @@
 const puppeteer = require('puppeteer');
-const new_store_url = "https://manager.vince.p.newstore.net/"
-const CRED = require('./CRED.json')
+const new_store_url = "https://manager.vince.p.newstore.net/";
+const CRED = require('./CRED.json');
+const fsp = require('fs').promises;
+
+const getCRED = async () => {
+  try {
+    const data = await fsp.readFile('CRED.json', 'utf8');
+    return JSON.parse(data)
+  } catch (error) {
+    throw new Error()
+  }
+}
 
 const handleLogIn = async (page, CRED) => {
-  const loginButton = await page.locator("#root > div > div > aside > div > div > a").click()
+  
+  const {username, password} = await getCRED()
+
+  await page
+    .locator("#root > div > div > aside > div > div > a")
+    .click()
+  await page.waitForSelector('#login-form > form', { visible: true });
+  await page.type('#login-form > form input[type="email"]', username);
+  await page.type('#login-form > form input[type="password"]', password);
+  await page.click('#login-form > form button[type="submit"]');
+
+
+
+
+
+
   return 
 }
 
