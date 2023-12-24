@@ -12,23 +12,18 @@ const getCRED = async () => {
   }
 }
 
-const handleLogIn = async (page, CRED) => {
-  
+const handleLogIn = async (page) => {
   const {username, password} = await getCRED()
-
   await page
     .locator("#root > div > div > aside > div > div > a")
     .click()
   await page.waitForSelector('#login-form > form', { visible: true });
   await page.type('#login-form > form input[type="email"]', username);
   await page.type('#login-form > form input[type="password"]', password);
-  await page.click('#login-form > form button[type="submit"]');
-
-
-
-
-
-
+  await Promise.all([
+    page.click('#login-form > form button[type="submit"]'),
+    page.waitForNavigation({waitUntil: 'networkidle0'})
+  ])
   return 
 }
 
@@ -41,8 +36,13 @@ const browser = await puppeteer.launch({
 });
 const page = await browser.newPage();
 await page.goto(new_store_url,{ waitUntil: 'networkidle0' });
+//check if login is needed
+if(page.url()== new_store_url) {
+  await handleLogIn(page, CRED);
+}
 
-await handleLogIn(page, CRED);
+
+
 
 
 
