@@ -2,4 +2,8 @@ node_modules
 
 package-lock.json
 
-tmp
+tmp/
+
+data.json
+
+results.csv

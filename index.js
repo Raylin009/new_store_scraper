@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const { appendFile } = require('fs').promises;
 
 
 (async () => {
@@ -7,6 +8,7 @@ const puppeteer = require('puppeteer');
     defaultViewport: false,
     userDataDir: "./tmp",
   });
+  let pageNumber = 1;
   const page = await browser.newPage();
   await page.goto('https://www.amazon.com/s?k=office+chair+wheels&crid=191F26OFNMQVU&qid=1703376409&sprefix=office+chair+wheels%2Caps%2C162&ref=sr_pg_1');
 
@@ -33,13 +35,21 @@ const puppeteer = require('puppeteer');
 
       if(title !== "Null"){
         items.push({title, price, imgURL})
+        data = JSON.stringify({title, price, imgURL})
+        try {
+          await appendFile('./data.json', `${data},`)
+          console.log(` wrote ${data} to data.json`)
+        } catch (error) {
+          throw error
+        }
       }
     }
 
     await page.waitForSelector(".s-pagination-next", {visible: true})
     const is_disabled = await page.$('.s-pagination-next.s-pagination-disabled') !== null;
     isBtnDisabled = is_disabled
-    // console.table({is_disabled, itemsLenght: items.length})
+    console.table({pageNumber, itemsLenght: items.length})
+    pageNumber++
     if(!is_disabled){
       await Promise.all([
         page.click("a.s-pagination-item.s-pagination-next.s-pagination-button.s-pagination-separator"),
@@ -48,5 +58,5 @@ const puppeteer = require('puppeteer');
     }
   }
 
-  console.log(items.length)
+  // console.log(items.length)
 })();
