@@ -1,8 +1,9 @@
 const puppeteer = require('puppeteer');
 const new_store_url = "https://manager.vince.p.newstore.net/"
-const CRED = require('.cred.json')
+const CRED = require('./CRED.json')
 
 const handleLogIn = async (page, CRED) => {
+  const loginButton = await page.locator("#root > div > div > aside > div > div > a").click()
   return 
 }
 
@@ -14,7 +15,7 @@ const browser = await puppeteer.launch({
   userDataDir: "./tmp",
 });
 const page = await browser.newPage();
-await page.goto(new_store_url);
+await page.goto(new_store_url,{ waitUntil: 'networkidle0' });
 
 await handleLogIn(page, CRED);
 
