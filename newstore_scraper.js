@@ -43,7 +43,7 @@ if(page.url()== new_store_url) {
 
 //change display rows to 100
 await page.select("span.-pageSizeOptions > select", "100")
-await page.waitForSelector('#root > div > div > div > div > div > div > div > div.sc-eNQAEJ.itKHgG > div > div.rt-noData', { hidden: true });
+await page.waitForSelector('div.rt-noData', { hidden: true });
 await page.screenshot({path: "screenshot.png"})
 
 
